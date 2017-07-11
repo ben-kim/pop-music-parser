@@ -1,0 +1,11 @@
+Project: Analysis of the lyrical similarity of popular music artists
+Group Member(s): Ben Kim
+Description: Using the vector space model, the goal of this project is to compare musical artists based on their lyrical content.
+
+Hypothesis: Songs within the same genre can have very different topics. However, my hypothesis is that hip-hop artists will be more similar to each other, as the most popular artists on the charts tend to rap about similar topics (e.g. fame, wealth).
+
+Procedure: To find the most popular artists, Jsoup was used to get links from Billboard and Genius. These two websites both have an artist index of the most popular artists whose names starts with A-Z and #. When parsing Genius, artists were only included if they also appeared on the Billboard website. For each artist, the lyrics were obtained from each of the ten most popular songs on their Genius page. The Document class from a previous homework was modified to generate term frequencies from a string of lyrics rather individual files.
+
+Results: See the attached results.txt file for the raw output of the program.
+
+Analysis: 
