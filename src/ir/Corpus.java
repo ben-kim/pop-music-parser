@@ -1,6 +1,5 @@
 package ir;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -31,7 +30,6 @@ public class Corpus {
      * maps a term to a set of documents containing that term
      */
 	private void createInvertedIndex() {
-		System.out.println(LocalTime.now().toString() + ": Creating the inverted index");
 		for (int i = 0; i < documents.size(); i++) {
 		    Document doc = documents.get(i);
 			Set<String> terms = doc.getTermList();

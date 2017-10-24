@@ -3,10 +3,8 @@ package parser;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,17 +19,11 @@ public class GeniusParserMain {
 		ArrayList<Document> documents = new ArrayList<Document>();
 		GeniusParser parser = new GeniusParser();
 
-		/**
-		 * constructing lyric map
-		 */
-		System.out.println(LocalTime.now().toString() + ": Finding artist URLs");
+		// constructing lyric map
 		parser.findArtistUrls();
-		System.out.println(LocalTime.now().toString() + ": Finding lyrics for all artists");
 		parser.getAllLyrics();
 		
-		/**
-		 * constructing vector space model
-		 */
+		// constructing vector space model
 		Map<String, String> lyricMap = parser.getLyricMap();
 		for (Entry<String, String> entry : lyricMap.entrySet()) {
 			documents.add(new Document(entry.getKey(), entry.getValue()));
@@ -40,10 +32,7 @@ public class GeniusParserMain {
 		VectorSpaceModel vectorSpace = new VectorSpaceModel(corpus);
 		TreeMap<Double, String> similarityMap = new TreeMap<>(Collections.reverseOrder());
 
-		/**
-		 * building similarity map
-		 */
-		System.out.println(LocalTime.now().toString() + ": Building similarity map");
+		// building similarity map
 		for (int i = 0; i < documents.size(); i++) {
 			for (int j = i + 1; j < documents.size(); j++) {
 				Document doc1 = documents.get(i);
@@ -53,10 +42,7 @@ public class GeniusParserMain {
 			}
 		}
 		
-		/**
-		 * output results to text file
-		 */
-		System.out.println(LocalTime.now().toString() + ": Writing to file");
+		// output results to text file
 		try {
 			PrintWriter writer = new PrintWriter("results.txt", "UTF-8");
 			while (!similarityMap.isEmpty()) {

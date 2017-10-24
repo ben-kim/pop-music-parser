@@ -1,6 +1,5 @@
 package ir;
 
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -34,7 +33,6 @@ public class Document implements Comparable<Document> {
 	 * @param tokens array of all words
 	 */
 	private void preprocess(String[] tokens) {
-		System.out.println(LocalTime.now().toString() + ": Preprocessing " + artistName);
 		for (int i = 0; i < tokens.length; i++) {
 		    String token = tokens[i];
 		    if (termFrequency.containsKey(token)) {

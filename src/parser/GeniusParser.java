@@ -2,12 +2,9 @@ package parser;
 
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.time.LocalTime;
-import java.util.Set;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import org.jsoup.Jsoup;
@@ -28,27 +25,25 @@ public class GeniusParser {
 	}
 	
 	/**
-	 * 
+	 * in the artist index, there are two songs listed for each popular artist
 	 */
 	public void findArtistUrls() {
-	    System.out.println(LocalTime.now().toString() + ": Accessing Genius artist index");
-	    /*for (int c = 97; c <= 122; c++) {
+	    for (int c = 97; c <= 122; c++) {
 	        try {
-                Document document = Jsoup.connect(artistIndexBase + (char) c).get();
-                Elements artists = document.select(".artists_index_list-artist_name");
-                for (int i = 0; i < artists.size(); i++) {
-                    String artistName = URLDecoder.decode(artists.get(i).text(), "UTF-8");
-                    Elements songs = artists.get(i).getElementsByClass("popular_song");
-                    ArrayList<String> urls = new ArrayList<>();
-                    for (int j = 0; j < songs.size(); j++) {
-                        urls.add(URLDecoder.decode(songs.get(i).attr("abs:href"), "UTF-8"));
-                    }
-                    artistUrlMap.put(artistName, urls);
-                }
+	            Document document = Jsoup.connect(artistIndexBase + (char) c).get();
+	            Elements artists = document.select(".artists_index_list-artist_name");
+	            Elements songs = document.select(".popular_song");
+	            for (int i = 0; i < songs.size() - 1; i += 2) {
+	                ArrayList<String> urls = new ArrayList<>();
+	                urls.add(songs.get(i).select("a").first().attr("href"));
+	                urls.add(songs.get(i+1).select("a").first().attr("href"));     
+	                String artistName = URLDecoder.decode(artists.get(i/2).text(), "UTF-8");
+	                artistUrlMap.put(artistName, urls);
+	            }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-	    }*/
+	    }
 	    try {
 	        Document document = Jsoup.connect(artistIndexBase + "0").get();
             Elements artists = document.select(".artists_index_list-artist_name");
@@ -63,13 +58,12 @@ public class GeniusParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-	    System.out.println(LocalTime.now().toString() + ": Found popular artists on Genius");
 	}
 
 	/**
-	 * 
-	 * @param artist
-	 * @return
+	 * connects to each URL and gets the raw text of the lyrics
+	 * @param artist the name of the artist to find lyrics for
+	 * @return a string containing the lyrics of the two songs
 	 */
 	public String getArtistLyrics(String artist) {
 		if (!artistUrlMap.containsKey(artist)) {
@@ -79,8 +73,8 @@ public class GeniusParser {
 		ArrayList<String> urls = artistUrlMap.get(artist);
 		for (int i = 0; i < urls.size(); i++) {
 			try {
-				Document doc = Jsoup.connect(urls.get(i)).get();
-				Element lyricBlock = doc.getElementsByClass("lyrics").first();
+				Document document = Jsoup.connect(urls.get(i)).get();
+				Element lyricBlock = document.getElementsByClass("lyrics").first();
 				allLyrics += lyricBlock.text() + " ";
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
@@ -91,10 +85,9 @@ public class GeniusParser {
 		return allLyrics;
 	}
 	
-
-    /**
-     * 
-     */
+	/**
+	 * generates the lyric map
+	 */
     public void getAllLyrics() {
         for (String artist : artistUrlMap.keySet()) {
             String lyrics = getArtistLyrics(artist);
@@ -102,10 +95,6 @@ public class GeniusParser {
         }
     }
 
-	/**
-	 * 
-	 * @return
-	 */
 	public Map<String, String> getLyricMap() {
 		return Collections.unmodifiableMap(lyricMap);
 	}
