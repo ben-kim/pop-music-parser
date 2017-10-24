@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * Edited for this project by bumjink
+ * edited for this project by bumjink
  * @author swapneel
  *
  */
@@ -14,6 +14,11 @@ public class Document implements Comparable<Document> {
 	private HashMap<String, Integer> termFrequency;
 	private String artistName;
 
+	/**
+	 * 
+	 * @param artist name of the artist
+	 * @param lyrics a single string of all lyrics
+	 */
 	public Document(String artist, String lyrics) {
 		artistName = artist;
 		termFrequency = new HashMap<String, Integer>();
@@ -24,26 +29,24 @@ public class Document implements Comparable<Document> {
 		preprocess(tokens);
 	}
 	
+	/**
+	 * generates the term frequency by counting all instances
+	 * @param tokens array of all words
+	 */
 	private void preprocess(String[] tokens) {
 		System.out.println(LocalTime.now().toString() + ": Preprocessing " + artistName);
-		for (String token : tokens) {
-			if (!(token.equalsIgnoreCase(""))) {
-				if (termFrequency.containsKey(token)) {
-					int oldCount = termFrequency.get(token);
-					termFrequency.put(token, ++oldCount);
-				} else {
-					termFrequency.put(token, 1);
-				}
-			}
+		for (int i = 0; i < tokens.length; i++) {
+		    String token = tokens[i];
+		    if (termFrequency.containsKey(token)) {
+		        int n = termFrequency.get(token);
+		        termFrequency.put(token, ++n);
+		    } else {
+		        termFrequency.put(token, 1);
+		    }
 		}
+		termFrequency.remove("");
 	}
 	
-	/**
-	 * This method will return the term frequency for a given word.
-	 * If this document doesn't contain the word, it will return 0
-	 * @param word The word to look for
-	 * @return the term frequency for this word in this document
-	 */
 	public double getTermFrequency(String word) {
 		if (termFrequency.containsKey(word)) {
 			return termFrequency.get(word);
@@ -51,11 +54,7 @@ public class Document implements Comparable<Document> {
 			return 0;
 		}
 	}
-	
-	/**
-	 * This method will return a set of all the terms which occur in this document.
-	 * @return a set of all terms in this document
-	 */
+
 	public Set<String> getTermList() {
 		return termFrequency.keySet();
 	}
